@@ -1,0 +1,87 @@
+name: bitset-ng
+version: '1.4.8'
+synopsis: A space-efficient set data structure.
+description: ! 'This is a portable fork of Sergei Lebedev bitset package.
+
+  It strips the GHC version-dependent GMP optimisations.
+
+  A /bit set/ is a compact data structure, which maintains a set of members
+
+  from a type that can be enumerated (i. e. has an `Enum'' instance).'
+category: Data Structures
+author:
+  - Sergei Lebedev <superbobry@gmail.com>
+  - Aleksey Kladov <aleksey.kladov@gmail.com>
+  - Fedor Gogolev <knsd@knsd.net>
+  - Marcos Sartori <msartori@thesiriusproject.com>
+maintainer: Marcos Sartori <msartori@thesiriusproject.com>
+license: MIT
+github: marlls1989/bitset-ng
+bug-reports: http://github.com/marlls1989/bitset-ng/issues
+tested-with: GHC==7.4.1 GHC==7.6.3 GHC==7.8.4 GHC==8.2.2
+other-extensions:
+- CPP
+ghc-options:
+- -Wall
+- -fno-warn-orphans
+library:
+  source-dirs: src
+  other-extensions:
+  - NamedFieldPuns
+  - MagicHash
+  - UnboxedTuples
+  - BangPatterns
+  - ForeignFunctionInterface
+  - GHCForeignImportPrim
+  - MagicHash
+  - UnliftedFFITypes
+  - UnboxedTuples
+  - GeneralizedNewtypeDeriving
+  - TypeFamilies
+  - DeriveDataTypeable
+  include-dirs:
+  - include
+  exposed-modules:
+  - Data.BitSet
+  - Data.BitSet.Dynamic
+  - Data.BitSet.Generic
+  - Data.BitSet.Word
+  dependencies:
+  - base >=4.4.0 && <5
+  - deepseq
+tests:
+  bitset-tests:
+    main: Tests.hs
+    source-dirs: tests
+    ghc-options:
+    - -O2
+    dependencies:
+    - base
+    - QuickCheck
+    - tasty
+    - tasty-quickcheck
+    - bitset-ng
+benchmarks:
+  bitset-benchmarks:
+    main: Benchmarks.hs
+    source-dirs:
+    - src
+    - benchmarks
+    other-extensions:
+    - ExistentialQuantification
+    ghc-options:
+    - -O2
+    - -optc-O3
+    - -optc-msse4.1
+    include-dirs:
+    - include
+    dependencies:
+    - base
+    - deepseq
+    - criterion
+    - containers
+    - random
+    - random-shuffle
+data-files:
+- CHANGES
+stability: Experimental

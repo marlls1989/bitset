@@ -31,8 +31,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-#include <bitset.h>
-
 module Data.BitSet.Generic
     (
     -- * Bit set type

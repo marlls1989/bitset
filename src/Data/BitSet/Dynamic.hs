@@ -1,6 +1,5 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MagicHash #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 #include <bitset.h>
 
@@ -30,108 +29,52 @@
 -- grows automatically when more elements are inserted into the bit set.
 
 module Data.BitSet.Dynamic
-    (
+  (
     -- * Bit set type
-      FasterInteger(FasterInteger)
-    , BitSet
+    BitSet
 
     -- * Operators
-    , (\\)
+  , (\\)
 
     -- * Construction
-    , empty
-    , singleton
-    , insert
-    , delete
+  , empty
+  , singleton
+  , insert
+  , delete
 
     -- * Query
-    , null
-    , size
-    , member
-    , notMember
-    , isSubsetOf
-    , isProperSubsetOf
+  , null
+  , size
+  , member
+  , notMember
+  , isSubsetOf
+  , isProperSubsetOf
 
-    -- * Combine
-    , union
-    , difference
-    , intersection
+  -- * Combine
+  , union
+  , difference
+  , intersection
 
-    -- * Transformations
-    , map
+  -- * Transformations
+  , map
 
-    -- * Folds
-    , foldl'
-    , foldr
+  -- * Folds
+  , foldl'
+  , foldr
 
-    -- * Filter
-    , filter
+  -- * Filter
+  , filter
 
-    -- * Lists
-    , toList
-    , fromList
-    ) where
+  -- * Lists
+  , toList
+  , fromList ) where
 
 import Prelude hiding (null, map, filter, foldr)
 
-import Data.Bits (Bits(..))
-import GHC.Base (Int(..))
-
-import Control.DeepSeq (NFData(..))
-
-import GHC.Integer.GMP.TypeExt (popCountInteger, testBitInteger,
-                                setBitInteger, clearBitInteger)
 import qualified Data.BitSet.Generic as GS
 
--- | A wrapper around 'Integer' which provides faster bit-level operations.
-newtype FasterInteger = FasterInteger { unFI :: Integer }
-    deriving (Read, Show, Eq, Ord, Enum, Integral, Num, Real, NFData)
 
-instance Bits FasterInteger where
-    FasterInteger x .&. FasterInteger y = FasterInteger $ x .&. y
-    {-# INLINE (.&.) #-}
-
-    FasterInteger x .|. FasterInteger y = FasterInteger $ x .|. y
-    {-# INLINE (.|.) #-}
-
-    FasterInteger x `xor` FasterInteger y = FasterInteger $ x `xor` y
-    {-# INLINE xor #-}
-
-    complement = FasterInteger . complement . unFI
-    {-# INLINE complement #-}
-
-    shift (FasterInteger x) = FasterInteger . shift x
-    {-# INLINE shift #-}
-
-    rotate (FasterInteger x) = FasterInteger . rotate x
-    {-# INLINE rotate #-}
-
-    bit = FasterInteger . bit
-    {-# INLINE bit #-}
-
-    testBit (FasterInteger x) (I# i) = testBitInteger x i
-    {-# SPECIALIZE INLINE testBit :: FasterInteger -> Int -> Bool #-}
-
-    setBit (FasterInteger x) (I# i) = FasterInteger $ setBitInteger x i
-    {-# SPECIALIZE INLINE setBit :: FasterInteger -> Int -> FasterInteger #-}
-
-    clearBit (FasterInteger x) (I# i) = FasterInteger $ clearBitInteger x i
-    {-# SPECIALIZE INLINE clearBit :: FasterInteger -> Int -> FasterInteger #-}
-
-    popCount (FasterInteger x) = I# (popCountInteger x)
-    {-# SPECIALIZE INLINE popCount :: FasterInteger -> Int #-}
-
-    isSigned = isSigned . unFI
-    {-# INLINE isSigned #-}
-
-    bitSize _ = error "bitSize: FasterInteger does not support bitSize."
-
-#if MIN_VERSION_base(4,7,0)
-    bitSizeMaybe _ = Nothing
-    {-# INLINE bitSizeMaybe #-}
-#endif
-
-type BitSet = GS.BitSet FasterInteger
+type BitSet = GS.BitSet Integer
 
 -- | /O(1)/. Is the bit set empty?
 null :: BitSet a -> Bool

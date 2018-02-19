@@ -17,15 +17,11 @@ import Test.QuickCheck.Function (Fun, Function (..), apply, functionMap)
 import Test.QuickCheck.Monadic (monadicIO, assert, run)
 
 import Data.BitSet (BitSet)
-import Data.BitSet.Dynamic (FasterInteger(..))
 import qualified Data.BitSet as BS
 import qualified Data.BitSet.Generic as GS
 
 instance (Arbitrary a, Enum a, Bits b) => Arbitrary (GS.BitSet b a) where
     arbitrary = GS.fromList <$> arbitrary
-
-instance Arbitrary FasterInteger where
-    arbitrary = FasterInteger <$> arbitrary
 
 -- QuickCheck 2.8 does not offer a Function instance
 -- for Word16 ( https://github.com/nick8325/quickcheck/issues/97 ).
@@ -214,47 +210,10 @@ propStorable storable = monadicIO $ do
     size = sizeOf storable
 
 
-propPopCount :: FasterInteger -> Property
-propPopCount xfi = xfi >= 0 ==> popCount xfi === popCount xi where
-  xi :: Integer
-  xi = fromIntegral xfi
-
-propTestBit :: FasterInteger -> Int16 -> Property
-propTestBit xfi i = xfi >= 0 ==> testBit xfi bit == testBit xi bit where
-  bit :: Int
-  bit = fromIntegral i
-
-  xi :: Integer
-  xi = fromIntegral xfi
-
-propSetBit :: FasterInteger -> Int16 -> Property
-propSetBit xfi i =
-    xfi >= 0 ==> setBit xfi bit == FasterInteger (setBit xi bit)
-  where
-    bit :: Int
-    bit = fromIntegral i
-
-    xi :: Integer
-    xi = fromIntegral xfi
-
-propClearBit :: FasterInteger -> Int16 -> Property
-propClearBit xfi i =
-    xfi >= 0 ==>
-    classify True "x not in bs" $
-    clearBit xfi bit == FasterInteger (clearBit xi bit)
-
-  where
-    bit :: Int
-    bit = fromIntegral i
-
-    xi :: Integer
-    xi = fromIntegral xfi
-
-
 main :: IO ()
 main = defaultMain tests where
   tests :: TestTree
-  tests = testGroup "Tests" $ [ testsBitSet, testsFasterInteger]
+  tests = testGroup "Tests" $ [ testsBitSet ]
 
   testsBitSet :: TestTree
   testsBitSet = testGroup "Data.BitSet" $
@@ -283,13 +242,4 @@ main = defaultMain tests where
       , testProperty "map" propMap
       , testProperty "filter" propFilter
       , testProperty "storable instance" propStorable
-      ]
-
-  testsFasterInteger :: TestTree
-  testsFasterInteger = testGroup "GHC.Integer.GMP" $
-      [
-        testProperty "pop count" propPopCount
-      , testProperty "test bit" propTestBit
-      , testProperty "set bit" propSetBit
-      , testProperty "clear bit" propClearBit
       ]

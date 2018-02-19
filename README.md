@@ -1,5 +1,8 @@
-bitset  [![Build Status][travis-img]][travis]
+bitset-ng
 ======
+
+This is a portable fork of Sergei Lebedev bitset package.
+It strips the GHC version-dependent GMP optimisations.
 
 A _bit set_ is a compact data structure, which maintains a set of members
 from a type that can be enumerated (i. e. has an `Enum` instance). Current
@@ -49,10 +52,5 @@ To run benchmarks, configure `cabal` with benchmarks
 and build:
 
 ```bash
-$ cabal-dev install-deps --enable-benchmarks && cabal-dev build
-$ ./dist/build/bitset-benchmarks/bitset-benchmarks -o dist/bench.html
+$ stack bench --ba "-o benchmarks/Benchmarks.html"
 ```
-
-[travis]: http://travis-ci.org/lambda-llama/bitset
-[travis-img]: https://secure.travis-ci.org/lambda-llama/bitset.png
-[hen]: https://github.com/selectel/hen/
