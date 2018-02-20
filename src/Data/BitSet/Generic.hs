@@ -47,6 +47,7 @@ module Data.BitSet.Generic
 
     -- * Query
     , null
+    , full
     , size
     , member
     , notMember
@@ -95,7 +96,7 @@ import qualified Data.List as List
 
 -- | A bit set with unspecified container type.
 newtype BitSet c a = BitSet { getBits :: c }
-   deriving (Eq, NFData, Storable, Ord, Typeable)
+   deriving (Eq, NFData, Storable, Ord, Typeable, Bits)
 
 instance (Enum a, Read a, Bits c) => Read (BitSet c a) where
     readPrec = parens . prec 10 $ do
@@ -127,6 +128,11 @@ zeroBits = bit 0 `clearBit` 0
 null :: Bits c => BitSet c a -> Bool
 null = (== zeroBits) . getBits
 {-# INLINE null #-}
+
+-- | /O(n)/. Is the bit set full?
+full :: (Bits c, Bounded a, Enum a) => BitSet c a -> Bool
+full s = and $ (`member` s) <$> [minBound .. maxBound]
+{-# INLINE full #-}
 
 -- | /O(1)/. The number of elements in the bit set.
 size :: Bits c => BitSet c a -> Int

@@ -42,6 +42,7 @@ module Data.BitSet.Word
 
     -- * Query
     , null
+    , full
     , size
     , member
     , notMember
@@ -80,6 +81,11 @@ type BitSet = GS.BitSet Word
 null :: BitSet a -> Bool
 null = GS.null
 {-# INLINE null #-}
+
+-- | /O(n)/. Is the bit set full?
+full :: (Bounded a, Enum a) => BitSet a -> Bool
+full = GS.full
+{-# INLINE full #-}
 
 -- | /O(1)/. The number of elements in the bit set.
 size :: BitSet a -> Int

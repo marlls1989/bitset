@@ -44,6 +44,7 @@ module Data.BitSet.Dynamic
 
     -- * Query
   , null
+  , full
   , size
   , member
   , notMember
@@ -73,13 +74,17 @@ import Prelude hiding (null, map, filter, foldr)
 
 import qualified Data.BitSet.Generic as GS
 
-
 type BitSet = GS.BitSet Integer
 
 -- | /O(1)/. Is the bit set empty?
 null :: BitSet a -> Bool
 null = GS.null
 {-# INLINE null #-}
+
+-- | /O(n)/. Is the bit set full?
+full :: (Bounded a, Enum a) => BitSet a -> Bool
+full = GS.full
+{-# INLINE full #-}
 
 -- | /O(1)/. The number of elements in the bit set.
 size :: BitSet a -> Int

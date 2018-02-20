@@ -7,7 +7,7 @@ import Data.Bits (Bits, popCount, testBit, setBit, clearBit)
 import Data.Int (Int16)
 import Data.List ((\\), intersect, union, nub, sort)
 import Data.Monoid ((<>), mempty)
-import Data.Word (Word, Word16)
+import Data.Word
 import Foreign (Storable(..), allocaBytes)
 
 import Test.Tasty (TestTree, testGroup, defaultMain)
@@ -95,6 +95,20 @@ propNullAfterDelete :: [Word16] -> Bool
 propNullAfterDelete xs = BS.null bs where
   bs :: BitSet Word16
   bs = foldr BS.delete (foldr BS.insert BS.empty xs) xs
+
+propFullIsFull :: Bool
+propFullIsFull = BS.full bs where
+  bs :: BitSet Word16
+  bs = BS.fromList [minBound .. maxBound]
+
+propEmptyIsNotFull :: Bool
+propEmptyIsNotFull = not $ BS.full bs where
+  bs :: BitSet Word16
+  bs = BS.empty
+
+propFull :: [Word16] -> Bool
+propFull xs = BS.full bs == (xs == [minBound .. maxBound]) where
+  bs = BS.fromList xs
 
 propIntersectionWithSelf :: [Word16] -> Bool
 propIntersectionWithSelf xs = all (`BS.member` bs) xs
@@ -242,4 +256,7 @@ main = defaultMain tests where
       , testProperty "map" propMap
       , testProperty "filter" propFilter
       , testProperty "storable instance" propStorable
+      , testProperty "full" propFull
+      , testProperty "full set is full" propFullIsFull
+      , testProperty "empty set is not full" propEmptyIsNotFull
       ]
