@@ -1,9 +1,13 @@
 sudo: false
+language: nix
 
 # Caching so the next build will be fast too.
 cache:
   directories:
-  - $HOME/.stack
+    - $HOME/.ghc
+    - $HOME/.cabal
+    - $HOME/.stack
+    - .stack-work
 
 before_install:
 # Download and unpack the stack executable
@@ -13,7 +17,7 @@ before_install:
 
 install:
   - travis_wait stack --no-terminal setup
-  - travis_wait stack --no-terminal test --only-snapshot
+  - travis_wait stack --no-terminal build
 
 script:
   - stack --no-terminal test
