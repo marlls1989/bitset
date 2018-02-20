@@ -1,4 +1,4 @@
-bitset-ng
+bitset-ng  [![Build Status][travis-img]][travis]
 ======
 
 This is a portable fork of Sergei Lebedev bitset package.
@@ -54,3 +54,7 @@ and build:
 ```bash
 $ stack bench --ba "-o benchmarks/Benchmarks.html"
 ```
+
+[travis]: https://travis-ci.org/marlls1989/bitset-ng
+[travis-img]: https://secure.travis-ci.org/marlls1989/bitset-ng.png
+[hen]: https://github.com/selectel/hen/
