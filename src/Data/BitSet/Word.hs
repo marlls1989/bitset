@@ -36,13 +36,14 @@ module Data.BitSet.Word
 
     -- * Construction
     , empty
+    , full
     , singleton
     , insert
     , delete
 
     -- * Query
     , null
-    , full
+    , complete
     , size
     , member
     , notMember
@@ -82,8 +83,13 @@ null :: BitSet a -> Bool
 null = GS.null
 {-# INLINE null #-}
 
--- | /O(n)/. Is the bit set full?
-full :: (Bounded a, Enum a) => BitSet a -> Bool
+-- | /O(1)/. Is the bit set full?
+complete :: (Bounded a, Enum a) => BitSet a -> Bool
+complete = GS.complete
+{-# INLINE complete #-}
+
+-- | The full bit set.
+full :: (Bounded a, Enum a) => BitSet a
 full = GS.full
 {-# INLINE full #-}
 

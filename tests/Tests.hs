@@ -97,17 +97,17 @@ propNullAfterDelete xs = BS.null bs where
   bs = foldr BS.delete (foldr BS.insert BS.empty xs) xs
 
 propFullIsFull :: Bool
-propFullIsFull = BS.full bs where
+propFullIsFull = BS.complete bs where
   bs :: BitSet Word16
   bs = BS.fromList [minBound .. maxBound]
 
 propEmptyIsNotFull :: Bool
-propEmptyIsNotFull = not $ BS.full bs where
+propEmptyIsNotFull = not $ BS.complete bs where
   bs :: BitSet Word16
   bs = BS.empty
 
 propFull :: [Word16] -> Bool
-propFull xs = BS.full bs == (xs == [minBound .. maxBound]) where
+propFull xs = BS.complete bs == (xs == [minBound .. maxBound]) where
   bs = BS.fromList xs
 
 propIntersectionWithSelf :: [Word16] -> Bool

@@ -40,14 +40,15 @@ module Data.BitSet.Generic
     , (\\)
 
     -- * Construction
+    , full
     , empty
     , singleton
     , insert
     , delete
 
     -- * Query
+    , complete
     , null
-    , full
     , size
     , member
     , notMember
@@ -81,7 +82,7 @@ import Control.DeepSeq (NFData(..))
 import Data.Bits (Bits, (.|.), (.&.), complement, bit,
                   testBit, setBit, clearBit, popCount)
 #if MIN_VERSION_base(4,7,0)
-import Data.Bits (bitSizeMaybe, isSigned, unsafeShiftR, zeroBits)
+import Data.Bits
 #endif
 import Data.Data (Typeable)
 import Data.Monoid (Monoid(..))
@@ -124,15 +125,15 @@ zeroBits = bit 0 `clearBit` 0
 {-# INLINE zeroBits #-}
 #endif
 
+-- | /O(1)/. Is the bit set full?
+complete :: (Bits c, Eq c, Num c, Bounded a, Enum a) => BitSet c a -> Bool
+complete = (== full)
+{-# INLINE complete #-}
+
 -- | /O(1)/. Is the bit set empty?
 null :: Bits c => BitSet c a -> Bool
 null = (== zeroBits) . getBits
 {-# INLINE null #-}
-
--- | /O(n)/. Is the bit set full?
-full :: (Bits c, Bounded a, Enum a) => BitSet c a -> Bool
-full s = and $ (`member` s) <$> [minBound .. maxBound]
-{-# INLINE full #-}
 
 -- | /O(1)/. The number of elements in the bit set.
 size :: Bits c => BitSet c a -> Int
@@ -159,6 +160,13 @@ isSubsetOf (BitSet bits1) (BitSet bits2) = bits2 .|. bits1 == bits2
 isProperSubsetOf :: Bits c => BitSet c a -> BitSet c a -> Bool
 isProperSubsetOf bs1 bs2 = bs1 `isSubsetOf` bs2 && bs1 /= bs2
 {-# INLINE isProperSubsetOf #-}
+
+-- | The full bit set.
+full :: (Bits c, Num c, Eq c, Bounded a, Enum a) => BitSet c a
+full = full' maxBound minBound where
+  full' :: (Bits c, Num c, Bounded a, Enum a) => a -> a -> BitSet c a
+  full' a = BitSet . shiftL ((shiftL 2  $ fromEnum a) - 1) . fromEnum
+{-# INLINE full #-}
 
 -- | The empty bit set.
 empty :: Bits c => BitSet c a
