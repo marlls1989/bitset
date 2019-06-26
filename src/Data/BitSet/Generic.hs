@@ -108,9 +108,10 @@ instance (Enum a, Show a, Bits c) => Show (BitSet c a) where
     showsPrec p bs = showParen (p > 10) $
                      showString "fromList " . shows (toList bs)
 
+instance Bits c => Semigroup (BitSet c a) where
+  (<>) = union
 instance Bits c => Monoid (BitSet c a) where
-    mempty  = empty
-    mappend = union
+  mempty  = empty
 
 #if defined(__GLASGOW_HASKELL__) && (__GLASGOW_HASKELL__ >= 707)
 instance (Enum a, Bits c) => IsList (BitSet c a) where
